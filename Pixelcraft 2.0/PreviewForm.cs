@@ -10,11 +10,21 @@ using System.Windows.Forms;
 
 namespace Pixelcraft_2._0
 {
-    public partial class Form1 : Form
+    public partial class PreviewForm : Form
     {
-        public Form1()
+        public PreviewForm()
         {
             InitializeComponent();
+        }
+
+        private void btn_SaveImage_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btn_SaveSchematic_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
