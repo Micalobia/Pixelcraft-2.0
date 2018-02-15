@@ -17,6 +17,7 @@
             {
                 components.Dispose();
             }
+            _work.Dispose();
             base.Dispose(disposing);
         }
 
@@ -28,26 +29,31 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.pcb_Original = new System.Windows.Forms.PictureBox();
             this.btn_LoadImage = new System.Windows.Forms.Button();
-            this.btn_ConvertImage = new System.Windows.Forms.Button();
             this.btn_LoadTexture = new System.Windows.Forms.Button();
             this.btn_Preview = new System.Windows.Forms.Button();
-            this.nud_Width = new System.Windows.Forms.NumericUpDown();
-            this.lbl_Width = new System.Windows.Forms.Label();
-            this.chk_Width = new System.Windows.Forms.CheckBox();
-            this.chk_Height = new System.Windows.Forms.CheckBox();
-            this.nud_Height = new System.Windows.Forms.NumericUpDown();
-            this.lbl_Height = new System.Windows.Forms.Label();
             this.ofd_LoadImage = new System.Windows.Forms.OpenFileDialog();
             this.pnl_menuBar = new System.Windows.Forms.Panel();
             this.btn_Maximize = new System.Windows.Forms.Button();
             this.btn_Close = new System.Windows.Forms.Button();
-            this.pgs_Convert = new System.Windows.Forms.ProgressBar();
+            this.ofd_LoadTexture = new System.Windows.Forms.OpenFileDialog();
+            this.btn_ConvertImage = new System.Windows.Forms.Button();
+            this.pbx_Convert = new Pixelcraft_2.ProgressBarEx();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.nud_input = new System.Windows.Forms.NumericUpDown();
+            this.lbl_input = new System.Windows.Forms.Label();
+            this.rad_maxRes = new System.Windows.Forms.RadioButton();
+            this.rad_useWidth = new System.Windows.Forms.RadioButton();
+            this.rad_useHeight = new System.Windows.Forms.RadioButton();
+            this.tot_expand = new System.Windows.Forms.ToolTip(this.components);
+            this.btn_cancel = new System.Windows.Forms.Button();
+            this.pnl_checks = new System.Windows.Forms.Panel();
             ((System.ComponentModel.ISupportInitialize)(this.pcb_Original)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nud_Width)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nud_Height)).BeginInit();
             this.pnl_menuBar.SuspendLayout();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_input)).BeginInit();
             this.SuspendLayout();
             // 
             // pcb_Original
@@ -74,20 +80,6 @@
             this.btn_LoadImage.UseVisualStyleBackColor = false;
             this.btn_LoadImage.Click += new System.EventHandler(this.Btn_LoadImage_Click);
             // 
-            // btn_ConvertImage
-            // 
-            this.btn_ConvertImage.BackColor = System.Drawing.SystemColors.ControlDark;
-            this.btn_ConvertImage.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btn_ConvertImage.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlLight;
-            this.btn_ConvertImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btn_ConvertImage.Location = new System.Drawing.Point(512, 42);
-            this.btn_ConvertImage.Name = "btn_ConvertImage";
-            this.btn_ConvertImage.Size = new System.Drawing.Size(280, 23);
-            this.btn_ConvertImage.TabIndex = 2;
-            this.btn_ConvertImage.Text = "Convert Image";
-            this.btn_ConvertImage.UseVisualStyleBackColor = false;
-            this.btn_ConvertImage.Click += new System.EventHandler(this.Btn_ConvertImage_Click);
-            // 
             // btn_LoadTexture
             // 
             this.btn_LoadTexture.BackColor = System.Drawing.SystemColors.ControlDark;
@@ -100,7 +92,7 @@
             this.btn_LoadTexture.TabIndex = 3;
             this.btn_LoadTexture.Text = "Load Texture";
             this.btn_LoadTexture.UseVisualStyleBackColor = false;
-            this.btn_LoadTexture.Click += new System.EventHandler(this.btn_LoadTexture_Click);
+            this.btn_LoadTexture.Click += new System.EventHandler(this.Btn_LoadTexture_Click);
             // 
             // btn_Preview
             // 
@@ -116,106 +108,9 @@
             this.btn_Preview.UseVisualStyleBackColor = false;
             this.btn_Preview.Click += new System.EventHandler(this.Btn_Preview_Click);
             // 
-            // nud_Width
-            // 
-            this.nud_Width.Dock = System.Windows.Forms.DockStyle.Top;
-            this.nud_Width.Location = new System.Drawing.Point(512, 80);
-            this.nud_Width.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.nud_Width.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nud_Width.Name = "nud_Width";
-            this.nud_Width.Size = new System.Drawing.Size(280, 20);
-            this.nud_Width.TabIndex = 5;
-            this.nud_Width.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // lbl_Width
-            // 
-            this.lbl_Width.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lbl_Width.Location = new System.Drawing.Point(512, 65);
-            this.lbl_Width.Name = "lbl_Width";
-            this.lbl_Width.Size = new System.Drawing.Size(280, 15);
-            this.lbl_Width.TabIndex = 6;
-            this.lbl_Width.Text = "Width (Blocks)";
-            this.lbl_Width.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // chk_Width
-            // 
-            this.chk_Width.AutoSize = true;
-            this.chk_Width.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chk_Width.Dock = System.Windows.Forms.DockStyle.Top;
-            this.chk_Width.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chk_Width.Location = new System.Drawing.Point(512, 100);
-            this.chk_Width.Name = "chk_Width";
-            this.chk_Width.Size = new System.Drawing.Size(280, 17);
-            this.chk_Width.TabIndex = 7;
-            this.chk_Width.Text = "Use Width";
-            this.chk_Width.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chk_Width.UseVisualStyleBackColor = true;
-            this.chk_Width.CheckedChanged += new System.EventHandler(this.Chk_Width_CheckedChanged);
-            // 
-            // chk_Height
-            // 
-            this.chk_Height.AutoSize = true;
-            this.chk_Height.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.chk_Height.Dock = System.Windows.Forms.DockStyle.Top;
-            this.chk_Height.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
-            this.chk_Height.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chk_Height.Location = new System.Drawing.Point(512, 152);
-            this.chk_Height.Name = "chk_Height";
-            this.chk_Height.Size = new System.Drawing.Size(280, 17);
-            this.chk_Height.TabIndex = 10;
-            this.chk_Height.Text = "Use Height";
-            this.chk_Height.TextAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chk_Height.UseVisualStyleBackColor = true;
-            this.chk_Height.CheckedChanged += new System.EventHandler(this.Chk_Height_CheckedChanged);
-            // 
-            // nud_Height
-            // 
-            this.nud_Height.Dock = System.Windows.Forms.DockStyle.Top;
-            this.nud_Height.Location = new System.Drawing.Point(512, 132);
-            this.nud_Height.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.nud_Height.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nud_Height.Name = "nud_Height";
-            this.nud_Height.Size = new System.Drawing.Size(280, 20);
-            this.nud_Height.TabIndex = 8;
-            this.nud_Height.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // lbl_Height
-            // 
-            this.lbl_Height.Dock = System.Windows.Forms.DockStyle.Top;
-            this.lbl_Height.Location = new System.Drawing.Point(512, 117);
-            this.lbl_Height.Name = "lbl_Height";
-            this.lbl_Height.Size = new System.Drawing.Size(280, 15);
-            this.lbl_Height.TabIndex = 9;
-            this.lbl_Height.Text = "Height (Blocks)";
-            this.lbl_Height.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // ofd_LoadImage
             // 
-            this.ofd_LoadImage.Filter = "Image Files|*.bmp;*.jpg;*.png|All files|*.*";
+            this.ofd_LoadImage.Filter = "Image Files|*.bmp;*.jpg;*.png;*.gif|All files|*.*";
             this.ofd_LoadImage.Title = "Load Image";
             // 
             // pnl_menuBar
@@ -228,9 +123,9 @@
             this.pnl_menuBar.Name = "pnl_menuBar";
             this.pnl_menuBar.Size = new System.Drawing.Size(792, 19);
             this.pnl_menuBar.TabIndex = 11;
-            this.pnl_menuBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pnl_menuBar_MouseDown);
-            this.pnl_menuBar.MouseMove += new System.Windows.Forms.MouseEventHandler(this.pnl_menuBar_MouseMove);
-            this.pnl_menuBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.pnl_menuBar_MouseUp);
+            this.pnl_menuBar.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Pnl_menuBar_MouseDown);
+            this.pnl_menuBar.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Pnl_menuBar_MouseMove);
+            this.pnl_menuBar.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Pnl_menuBar_MouseUp);
             // 
             // btn_Maximize
             // 
@@ -243,7 +138,7 @@
             this.btn_Maximize.Size = new System.Drawing.Size(48, 19);
             this.btn_Maximize.TabIndex = 1;
             this.btn_Maximize.UseVisualStyleBackColor = false;
-            this.btn_Maximize.Click += new System.EventHandler(this.btn_Maximize_Click);
+            this.btn_Maximize.Click += new System.EventHandler(this.Btn_Maximize_Click);
             // 
             // btn_Close
             // 
@@ -256,18 +151,134 @@
             this.btn_Close.Size = new System.Drawing.Size(48, 19);
             this.btn_Close.TabIndex = 0;
             this.btn_Close.UseVisualStyleBackColor = false;
-            this.btn_Close.Click += new System.EventHandler(this.btn_Close_Click);
+            this.btn_Close.Click += new System.EventHandler(this.Btn_Close_Click);
             // 
-            // pgs_Convert
+            // ofd_LoadTexture
             // 
-            this.pgs_Convert.Dock = System.Windows.Forms.DockStyle.Top;
-            this.pgs_Convert.Location = new System.Drawing.Point(512, 169);
-            this.pgs_Convert.Maximum = 1000;
-            this.pgs_Convert.Name = "pgs_Convert";
-            this.pgs_Convert.Size = new System.Drawing.Size(280, 23);
-            this.pgs_Convert.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
-            this.pgs_Convert.TabIndex = 12;
-            this.pgs_Convert.Visible = false;
+            this.ofd_LoadTexture.Filter = "Zip Files|*.zip|All files|*.*";
+            // 
+            // btn_ConvertImage
+            // 
+            this.btn_ConvertImage.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.btn_ConvertImage.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btn_ConvertImage.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlLight;
+            this.btn_ConvertImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_ConvertImage.Location = new System.Drawing.Point(512, 42);
+            this.btn_ConvertImage.Name = "btn_ConvertImage";
+            this.btn_ConvertImage.Size = new System.Drawing.Size(280, 23);
+            this.btn_ConvertImage.TabIndex = 2;
+            this.btn_ConvertImage.Text = "Convert Image";
+            this.btn_ConvertImage.UseVisualStyleBackColor = false;
+            this.btn_ConvertImage.Click += new System.EventHandler(this.Btn_ConvertImage_Click);
+            // 
+            // pbx_Convert
+            // 
+            this.pbx_Convert.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pbx_Convert.Location = new System.Drawing.Point(512, 176);
+            this.pbx_Convert.Maximum = 1000;
+            this.pbx_Convert.Name = "pbx_Convert";
+            this.pbx_Convert.Size = new System.Drawing.Size(280, 23);
+            this.pbx_Convert.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.pbx_Convert.TabIndex = 12;
+            this.pbx_Convert.Visible = false;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.nud_input);
+            this.panel1.Controls.Add(this.lbl_input);
+            this.panel1.Controls.Add(this.rad_maxRes);
+            this.panel1.Controls.Add(this.rad_useWidth);
+            this.panel1.Controls.Add(this.rad_useHeight);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panel1.Location = new System.Drawing.Point(512, 65);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(280, 88);
+            this.panel1.TabIndex = 13;
+            // 
+            // nud_input
+            // 
+            this.nud_input.Dock = System.Windows.Forms.DockStyle.Top;
+            this.nud_input.Location = new System.Drawing.Point(0, 64);
+            this.nud_input.Maximum = new decimal(new int[] {
+            256,
+            0,
+            0,
+            0});
+            this.nud_input.Name = "nud_input";
+            this.nud_input.Size = new System.Drawing.Size(280, 20);
+            this.nud_input.TabIndex = 4;
+            // 
+            // lbl_input
+            // 
+            this.lbl_input.AutoSize = true;
+            this.lbl_input.Dock = System.Windows.Forms.DockStyle.Top;
+            this.lbl_input.Location = new System.Drawing.Point(0, 51);
+            this.lbl_input.Name = "lbl_input";
+            this.lbl_input.Size = new System.Drawing.Size(60, 13);
+            this.lbl_input.TabIndex = 3;
+            this.lbl_input.Text = "Use Height";
+            // 
+            // rad_maxRes
+            // 
+            this.rad_maxRes.AutoSize = true;
+            this.rad_maxRes.Dock = System.Windows.Forms.DockStyle.Top;
+            this.rad_maxRes.Location = new System.Drawing.Point(0, 34);
+            this.rad_maxRes.Name = "rad_maxRes";
+            this.rad_maxRes.Size = new System.Drawing.Size(280, 17);
+            this.rad_maxRes.TabIndex = 2;
+            this.rad_maxRes.Text = "Max Resolution";
+            this.rad_maxRes.UseVisualStyleBackColor = true;
+            // 
+            // rad_useWidth
+            // 
+            this.rad_useWidth.AutoSize = true;
+            this.rad_useWidth.Dock = System.Windows.Forms.DockStyle.Top;
+            this.rad_useWidth.Location = new System.Drawing.Point(0, 17);
+            this.rad_useWidth.Name = "rad_useWidth";
+            this.rad_useWidth.Size = new System.Drawing.Size(280, 17);
+            this.rad_useWidth.TabIndex = 1;
+            this.rad_useWidth.Text = "Use Width";
+            this.rad_useWidth.UseVisualStyleBackColor = true;
+            // 
+            // rad_useHeight
+            // 
+            this.rad_useHeight.AutoSize = true;
+            this.rad_useHeight.Checked = true;
+            this.rad_useHeight.Dock = System.Windows.Forms.DockStyle.Top;
+            this.rad_useHeight.Location = new System.Drawing.Point(0, 0);
+            this.rad_useHeight.Name = "rad_useHeight";
+            this.rad_useHeight.Size = new System.Drawing.Size(280, 17);
+            this.rad_useHeight.TabIndex = 0;
+            this.rad_useHeight.TabStop = true;
+            this.rad_useHeight.Text = "Use Height";
+            this.rad_useHeight.UseVisualStyleBackColor = true;
+            // 
+            // tot_expand
+            // 
+            this.tot_expand.ToolTipTitle = "Image Expansion";
+            // 
+            // btn_cancel
+            // 
+            this.btn_cancel.BackColor = System.Drawing.SystemColors.ControlDark;
+            this.btn_cancel.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btn_cancel.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlLight;
+            this.btn_cancel.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_cancel.Location = new System.Drawing.Point(512, 153);
+            this.btn_cancel.Name = "btn_cancel";
+            this.btn_cancel.Size = new System.Drawing.Size(280, 23);
+            this.btn_cancel.TabIndex = 15;
+            this.btn_cancel.Text = "Cancel";
+            this.btn_cancel.UseVisualStyleBackColor = false;
+            this.btn_cancel.Visible = false;
+            this.btn_cancel.Click += new System.EventHandler(this.Btn_cancel_Click);
+            // 
+            // pnl_checks
+            // 
+            this.pnl_checks.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnl_checks.Location = new System.Drawing.Point(512, 199);
+            this.pnl_checks.Name = "pnl_checks";
+            this.pnl_checks.Size = new System.Drawing.Size(280, 286);
+            this.pnl_checks.TabIndex = 16;
             // 
             // MainForm
             // 
@@ -275,15 +286,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(792, 531);
-            this.Controls.Add(this.pgs_Convert);
-            this.Controls.Add(this.chk_Height);
-            this.Controls.Add(this.nud_Height);
-            this.Controls.Add(this.lbl_Height);
-            this.Controls.Add(this.chk_Width);
-            this.Controls.Add(this.nud_Width);
+            this.Controls.Add(this.pnl_checks);
+            this.Controls.Add(this.pbx_Convert);
+            this.Controls.Add(this.btn_cancel);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.btn_Preview);
             this.Controls.Add(this.btn_LoadTexture);
-            this.Controls.Add(this.lbl_Width);
             this.Controls.Add(this.btn_ConvertImage);
             this.Controls.Add(this.btn_LoadImage);
             this.Controls.Add(this.pcb_Original);
@@ -291,13 +299,12 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "MainForm";
             this.Text = "Form1";
-            this.GotFocus += new System.EventHandler(this.MainForm_GotFocus);
             ((System.ComponentModel.ISupportInitialize)(this.pcb_Original)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nud_Width)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nud_Height)).EndInit();
             this.pnl_menuBar.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_input)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -305,20 +312,24 @@
 
         private System.Windows.Forms.PictureBox pcb_Original;
         private System.Windows.Forms.Button btn_LoadImage;
-        private System.Windows.Forms.Button btn_ConvertImage;
         private System.Windows.Forms.Button btn_LoadTexture;
         private System.Windows.Forms.Button btn_Preview;
-        private System.Windows.Forms.NumericUpDown nud_Width;
-        private System.Windows.Forms.Label lbl_Width;
-        private System.Windows.Forms.CheckBox chk_Width;
-        private System.Windows.Forms.CheckBox chk_Height;
-        private System.Windows.Forms.NumericUpDown nud_Height;
-        private System.Windows.Forms.Label lbl_Height;
         private System.Windows.Forms.OpenFileDialog ofd_LoadImage;
         private System.Windows.Forms.Panel pnl_menuBar;
         private System.Windows.Forms.Button btn_Close;
         private System.Windows.Forms.Button btn_Maximize;
-        private System.Windows.Forms.ProgressBar pgs_Convert;
+        private System.Windows.Forms.OpenFileDialog ofd_LoadTexture;
+        private System.Windows.Forms.Button btn_ConvertImage;
+        private ProgressBarEx pbx_Convert;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.NumericUpDown nud_input;
+        private System.Windows.Forms.Label lbl_input;
+        private System.Windows.Forms.RadioButton rad_maxRes;
+        private System.Windows.Forms.RadioButton rad_useWidth;
+        private System.Windows.Forms.RadioButton rad_useHeight;
+        private System.Windows.Forms.ToolTip tot_expand;
+        private System.Windows.Forms.Button btn_cancel;
+        private System.Windows.Forms.Panel pnl_checks;
     }
 }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Mycan_Graphics;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -6,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -25,20 +27,32 @@ namespace Pixelcraft_2
         public MainForm()
         {
             InitializeComponent();
+            DoubleBuffered = true;
             _preview = new PreviewForm();
             _work = Work.GetWork();
             _work.Tick += _work_Tick;
-            _work.ThreadEnd += _work_ThreadEnd;
+            _work.ConvertThreadEnd += _work_ConvertEnd;
+            _work.TextureThreadEnd += _work_TextureEnd;
 
-            foreach(Control c in Controls)
+            foreach (Control c in Controls)
             {
                 c.TabStop = false;
             }
-            foreach(Control c in pnl_menuBar.Controls)
+            foreach (Control c in pnl_menuBar.Controls)
             {
                 c.TabStop = false;
             }
-            GotFocus += MainForm_GotFocus;
+
+            List<CheckBox> test = new List<CheckBox>();
+            for (int i = 0; i < 5; i++)
+            {
+                test.Add(new CheckBox
+                {
+                    Text = "Test " + i.ToString(),
+                    Dock = DockStyle.Top
+                });
+            }
+            pnl_checks.Controls.Add(_work.CheckPanel.Panel);
         }
 
         private void SetColor(Color color)
@@ -73,67 +87,73 @@ namespace Pixelcraft_2
             btn_Maximize.FlatAppearance.BorderColor = color3;
             btn_Maximize.BackColor = color4;
             btn_Maximize.ForeColor = color4.Text();
-            //Labels
-            lbl_Height.BackColor = color2;
-            lbl_Height.ForeColor = color2.Text();
             //
-            lbl_Width.BackColor = color2;
-            lbl_Width.ForeColor = color2.Text();
+            btn_Close.FlatAppearance.BorderColor = color2;
+            btn_Close.BackColor = color3;
+            btn_Close.ForeColor = color3.Text();
             //Misc
-            chk_Height.BackColor = color2;
-            chk_Height.ForeColor = color2.Text();
-            //
-            chk_Width.BackColor = color2;
-            chk_Width.ForeColor = color2.Text();
-            //
             pnl_menuBar.BackColor = color3;
             pnl_menuBar.ForeColor = color3.Text();
             //
-            pgs_Convert.BackColor = color;
-            pgs_Convert.ForeColor = color;
+            pbx_Convert.BackColor = color3.Shift(ColorShift.GBR);
+            pbx_Convert.ForeColor = color.Shift(ColorShift.GBR);
 
         }
 
-        #region Thread End
+        #region Convert Image Thread End
         /// <summary>
         /// Is called when the conversion thread ends to set the preview image
         /// </summary>
         /// <param name="source">Needed for events, I dont use it, you can just set it to null</param>
         /// <param name="e">Gives the method the image needed for setting</param>
-        private void _work_ThreadEnd(object source, ConvertImageEndArgs e)
+        private void _work_ConvertEnd(object source, ConvertImageEndArgs e)
         {
             if (InvokeRequired)
             {
-                ThreadEnd te = new ThreadEnd(UpdatePreviewImage);
+                ImageThreadEnd te = new ImageThreadEnd(UpdatePreviewImage);
                 Invoke
                     (te, new object[] { e.GetBitmap() });
             }
             else
             {
-                _preview.SetColor(_work.AverageColor(new Bitmap(pcb_Original.Image)));
-                _preview.pcb_Preview.Image = e.GetBitmap();
-                pgs_Convert.Hide();
+                UpdatePreviewImage(e.GetBitmap());
             }
-
-            e.GetBitmap().Dispose();
         }
 
         /// <summary>
         /// Sets the preview image
         /// </summary>
         /// <param name="bitmap">The image to set it to</param>
-        private void UpdatePreviewImage(Bitmap bitmap)
+        private void UpdatePreviewImage(Canvas bitmap)
         {
-            _preview.pcb_Preview.Image = (bitmap.Clone() as Bitmap);
-            _preview.SetColor(_work.AverageColor(new Bitmap(pcb_Original.Image)));
-            bitmap.Dispose();
-            pgs_Convert.Hide();
+            _preview.pcb_Preview.Image = bitmap.GetImage();
+            _preview.SetColor(Color.FromArgb(bitmap.AverageColor()));
+            pbx_Convert.Hide();
+            EnableButton(DisableButtonMode.Convert);
         }
+        #endregion
+
+        #region Load Texture Thread End
+        private void _work_TextureEnd(object source, EventArgs e)
+        {
+            if (InvokeRequired)
+            {
+                TextureThreadEnd te = new TextureThreadEnd(UpdateTextureEnd);
+                Invoke
+                    (te);
+            }
+            else
+            {
+                UpdateTextureEnd();
+            }
+        }
+
+        private void UpdateTextureEnd() => EnableButton(DisableButtonMode.Texture);
         #endregion
 
         private void _work_Tick(object source, UpdateEventArgs e)
         {
-            int val = (int)((e.Percent* 1000) <= 1000 ? e.Percent* 1000 : 1000);
+            int val = (int)((e.Percent * 1000) <= 1000 ? e.Percent * 1000 : 1000);
             if (InvokeRequired)
             {
                 SetProgressBar spb = new SetProgressBar(UpdateProgressBar);
@@ -142,12 +162,22 @@ namespace Pixelcraft_2
             }
             else
             {
-                pgs_Convert.Value = val;
+                pbx_Convert.Value = val;
+                Invalidate();
             }
         }
 
-        private void UpdateProgressBar(int value) => pgs_Convert.Value = value;
+        /// <summary>
+        /// Updates the progress bar with the value specified
+        /// </summary>
+        /// <param name="value">A number between 1 and 1000</param>
+        private void UpdateProgressBar(int value) => pbx_Convert.Value = value;
 
+        /// <summary>
+        /// Loads an image into the picture box to prepare for conversion
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Btn_LoadImage_Click(object sender, EventArgs e)
         {
             ofd_LoadImage.FileName = "";
@@ -156,45 +186,114 @@ namespace Pixelcraft_2
             {
                 _originalImage = new Bitmap(Image.FromFile(ofd_LoadImage.FileName));
                 pcb_Original.Image = _originalImage;
+                //Backcolor Change
+                Color color = Color.FromArgb((int)(0xff000000 | new Canvas(_originalImage).AverageColor()));
+                SetColor(color);
             }
-            //Backcolor Change
-            Color color = Color.FromArgb(255, _work.AverageColor(new Bitmap(pcb_Original.Image)));
-            SetColor(color);
-
         }
 
+        /// <summary>
+        /// Converts the image in the picture box into another image and a minecraft schematic file
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Btn_ConvertImage_Click(object sender, EventArgs e)
         {
-            pgs_Convert.Show();
-            
-            _work.ConvertImageThread(new Bitmap(pcb_Original.Image), nud_Width.Enabled ? (int)nud_Width.Value : -1, nud_Height.Enabled ? (int)nud_Height.Value : -1, true);
+            if (pcb_Original.Image == null) Btn_LoadImage_Click(sender, e);
+            if (pcb_Original.Image == null) return;
+            //_preview.pcb_Preview.Image = _work.Test(new Bitmap(pcb_Original.Image));
+            DisableButton(DisableButtonMode.Convert);
+            pbx_Convert.Show();
+            int x = rad_useWidth.Checked ? (int)nud_input.Value : -1;
+            int y = rad_useHeight.Checked ? (int)nud_input.Value : -1;
+            if (rad_maxRes.Checked) x = y = -1;
+            _work.ConvertImageThread(new Bitmap(pcb_Original.Image), x, y);
         }
 
-        private void btn_LoadTexture_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Loads a texture pack for use when calulating the blocks used
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btn_LoadTexture_Click(object sender, EventArgs e)
         {
-            SetColor(Color.Red);
+            DisableButton(DisableButtonMode.Texture);
+            if (ofd_LoadTexture.ShowDialog() != DialogResult.Cancel) _work.LoadTextureThread(ofd_LoadTexture.FileName);
         }
 
-        private void Btn_Preview_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Disables buttons according to what thread is running
+        /// </summary>
+        /// <param name="mode">Specifies the thread running</param>
+        private void DisableButton(DisableButtonMode mode)
         {
-            _preview.Show();
-            _preview.Focus();
+            switch (mode)
+            {
+                case DisableButtonMode.Convert:
+                    btn_ConvertImage.Disable();
+                    btn_LoadImage.Disable();
+                    btn_LoadTexture.Disable();
+                    break;
+                case DisableButtonMode.Texture:
+                    btn_ConvertImage.Disable();
+                    btn_LoadTexture.Disable();
+                    break;
+            }
+            btn_cancel.Show();
         }
 
-        private void MainForm_GotFocus(object sender, EventArgs e) => _preview.Hide();
+        /// <summary>
+        /// Enables buttons according to what thread is running
+        /// </summary>
+        /// <param name="mode">Specifies which thread is running</param>
+        private void EnableButton(DisableButtonMode mode)
+        {
+            switch (mode)
+            {
+                case DisableButtonMode.Convert:
+                    btn_ConvertImage.Enable();
+                    btn_LoadImage.Enable();
+                    btn_LoadTexture.Enable();
+                    break;
+                case DisableButtonMode.Texture:
+                    btn_ConvertImage.Enable();
+                    btn_LoadTexture.Enable();
+                    break;
+            }
+            btn_cancel.Hide();
+        }
 
-        private void Chk_Width_CheckedChanged(object sender, EventArgs e) => nud_Width.Enabled = !chk_Width.Checked;
+        /// <summary>
+        /// Opens up the preview menu
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Btn_Preview_Click(object sender, EventArgs e) => _preview.Show(true);
 
-        private void Chk_Height_CheckedChanged(object sender, EventArgs e) => nud_Height.Enabled = !chk_Height.Checked;
+
+        private void Btn_cancel_Click(object sender, EventArgs e)
+        {
+            _work.InterruptConvertThread();
+            _work.InterruptTextureThread();
+            EnableButton(DisableButtonMode.Convert);
+            EnableButton(DisableButtonMode.Texture);
+            btn_cancel.Hide();
+            pbx_Convert.Hide();
+        }
 
         //Menu Bar Stuff
         #region Menu Bar
-        private void btn_Close_Click(object sender, EventArgs e)
+        private void Btn_Close_Click(object sender, EventArgs e)
         {
             Dispose();
         }
-        private void btn_Maximize_Click(object sender, EventArgs e)
+        private void Btn_Maximize_Click(object sender, EventArgs e)
         {
+            if (e == null)
+            {
+                throw new ArgumentNullException(nameof(e));
+            }
+
             switch (WindowState)
             {
                 case FormWindowState.Maximized:
@@ -209,17 +308,21 @@ namespace Pixelcraft_2
                     break;
             }
         }
-        private void pnl_menuBar_MouseDown(object sender, MouseEventArgs e)
+        private void Pnl_menuBar_MouseDown(object sender, MouseEventArgs e)
         {
+            if (e == null)
+            {
+                throw new ArgumentNullException(nameof(e));
+            }
+
             _snapX = e.X;
             _snapY = e.Y;
             _moving = true;
         }
-        private void pnl_menuBar_MouseUp(object sender, EventArgs e)
-        {
-            _moving = false;
-        }
-        private void pnl_menuBar_MouseMove(object sender, MouseEventArgs e)
+
+        private void Pnl_menuBar_MouseUp(object sender, EventArgs e) => _moving = false;
+
+        private void Pnl_menuBar_MouseMove(object sender, MouseEventArgs e)
         {
             if (_moving && e.Button == MouseButtons.Left)
             {
@@ -227,7 +330,6 @@ namespace Pixelcraft_2
                 int y = _snapY - e.Y;
                 Left -= x;
                 Top -= y;
-                Console.WriteLine("{0}, {1}, {2}, {3}", x, y, Left, Top);
             }
         }
         #endregion

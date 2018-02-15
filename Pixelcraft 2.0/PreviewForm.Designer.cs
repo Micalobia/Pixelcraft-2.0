@@ -52,26 +52,31 @@
             // 
             // btn_SaveImage
             // 
+            this.btn_SaveImage.BackColor = System.Drawing.SystemColors.ControlDark;
             this.btn_SaveImage.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btn_SaveImage.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlLight;
             this.btn_SaveImage.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btn_SaveImage.ForeColor = System.Drawing.SystemColors.ControlText;
             this.btn_SaveImage.Location = new System.Drawing.Point(512, 19);
             this.btn_SaveImage.Name = "btn_SaveImage";
             this.btn_SaveImage.Size = new System.Drawing.Size(98, 23);
             this.btn_SaveImage.TabIndex = 1;
             this.btn_SaveImage.Text = "Save Image";
-            this.btn_SaveImage.UseVisualStyleBackColor = true;
+            this.btn_SaveImage.UseVisualStyleBackColor = false;
             this.btn_SaveImage.Click += new System.EventHandler(this.Btn_SaveImage_Click);
             // 
             // btn_SaveSchematic
             // 
+            this.btn_SaveSchematic.BackColor = System.Drawing.SystemColors.ControlDark;
             this.btn_SaveSchematic.Dock = System.Windows.Forms.DockStyle.Top;
+            this.btn_SaveSchematic.FlatAppearance.BorderColor = System.Drawing.SystemColors.ControlLight;
             this.btn_SaveSchematic.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btn_SaveSchematic.Location = new System.Drawing.Point(512, 42);
             this.btn_SaveSchematic.Name = "btn_SaveSchematic";
             this.btn_SaveSchematic.Size = new System.Drawing.Size(98, 23);
             this.btn_SaveSchematic.TabIndex = 2;
             this.btn_SaveSchematic.Text = "Save Schematic";
-            this.btn_SaveSchematic.UseVisualStyleBackColor = true;
+            this.btn_SaveSchematic.UseVisualStyleBackColor = false;
             this.btn_SaveSchematic.Click += new System.EventHandler(this.btn_SaveSchematic_Click);
             // 
             // pnl_menuBar
@@ -116,7 +121,7 @@
             // 
             // sfg_SaveImage
             // 
-            this.sfg_SaveImage.Filter = "Image Files|*.bmp;*.jpg;*.png|All files|*.*";
+            this.sfg_SaveImage.Filter = "Image Files|*.bmp;*.jpg;*.png;*.gif|All files|*.*";
             // 
             // sfg_SaveSchem
             // 
@@ -126,7 +131,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.BackColor = System.Drawing.SystemColors.ControlLight;
             this.ClientSize = new System.Drawing.Size(610, 531);
             this.Controls.Add(this.btn_SaveSchematic);
             this.Controls.Add(this.btn_SaveImage);

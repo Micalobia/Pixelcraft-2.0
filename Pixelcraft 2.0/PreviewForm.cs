@@ -33,6 +33,12 @@ namespace Pixelcraft_2
             if (sfg_SaveSchem.ShowDialog() != DialogResult.Cancel) _work.GetSchematic().Export(sfg_SaveSchem.FileName);
         }
 
+        internal void Show(bool focus)
+        {
+            Show();
+            Focus();
+        }
+
         public void SetColor(Color color)
         {
             color = Color.FromArgb(255, color);
